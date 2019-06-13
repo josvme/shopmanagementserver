@@ -7,5 +7,13 @@ defmodule MsWeb.Router do
 
   scope "/api", MsWeb do
     pipe_through :api
+    scope "/v1" do
+      resources "/products", ProductController
+      resources "/brands", BrandController
+      resources "/orders", OrderController
+      resources "/customers", CustomerController
+      resources "/order_items", OrderItemController
+      resources "/deliveries", DeliveryController
+    end
   end
 end
