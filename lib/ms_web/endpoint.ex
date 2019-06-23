@@ -40,5 +40,6 @@ defmodule MsWeb.Endpoint do
     key: "_ms_key",
     signing_salt: "ZhUvtDk1"
 
+  plug CORSPlug
   plug MsWeb.Router
 end
