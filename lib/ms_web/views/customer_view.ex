@@ -3,11 +3,11 @@ defmodule MsWeb.CustomerView do
   alias MsWeb.CustomerView
 
   def render("index.json", %{customers: customers}) do
-    %{customers: render_many(customers, CustomerView, "customer.json")}
+    %{data: render_many(customers, CustomerView, "customer.json")}
   end
 
   def render("show.json", %{customer: customer}) do
-    %{customer: render_one(customer, CustomerView, "customer.json")}
+    %{data: render_one(customer, CustomerView, "customer.json")}
   end
 
   def render("customer.json", %{customer: customer}) do
