@@ -8,7 +8,7 @@ defmodule Ms.InventoryManagement.Product do
     field :stock, :integer
     field :tax, :float
     field :details, :map
-    belongs_to(:brand, Ms.InventoryManagement.Brand)
+    belongs_to :brand, Ms.InventoryManagement.Brand
 
     timestamps()
   end

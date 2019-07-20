@@ -14,6 +14,7 @@ defmodule MsWeb.OrderView do
     %{id: order.id,
       creation_date: order.creation_date,
       message: order.message,
-      details: order.details}
+      details: order.details,
+      order_items: order.order_items}
   end
 end

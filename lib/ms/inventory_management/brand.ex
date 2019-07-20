@@ -5,6 +5,7 @@ defmodule Ms.InventoryManagement.Brand do
   schema "brands" do
     field :details, :map
     field :name, :string
+    has_many :products, Ms.InventoryManagement.Product
 
     timestamps()
   end

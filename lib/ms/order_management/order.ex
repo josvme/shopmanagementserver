@@ -6,7 +6,8 @@ defmodule Ms.OrderManagement.Order do
     field :creation_date, :utc_datetime
     field :details, :map
     field :message, :string
-    field :customer, :id
+    belongs_to :customer, Ms.CustomerManagement.Customer
+    has_many :order_items, Ms.OrderManagement.OrderItem
 
     timestamps()
   end

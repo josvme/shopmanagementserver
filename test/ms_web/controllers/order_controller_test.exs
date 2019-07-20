@@ -5,16 +5,18 @@ defmodule MsWeb.OrderControllerTest do
   alias Ms.OrderManagement.Order
 
   @create_attrs %{
-    creation_date: "2010-04-17T14:00:00Z",
-    details: %{},
-    message: "some message"
+    "creation_date" => "2010-04-17T14:00:00Z",
+   "details" => %{},
+   "message" => "some message",
+   "order_items" => [%{"amount" => 42, "unit_price" => 120.5}]
   }
   @update_attrs %{
-    creation_date: "2011-05-18T15:01:01Z",
-    details: %{},
-    message: "some updated message"
+    "creation_date" => "2011-05-18T15:01:01Z",
+    "details" => %{},
+    "message" => "some updated message",
+    "order_items" =>[%{"amount" => 42, "unit_price" => 120.5}]
   }
-  @invalid_attrs %{creation_date: nil, details: nil, message: nil}
+  @invalid_attrs %{"creation_date" => nil, "details" => nil, "message" => nil}
 
   def fixture(:order) do
     {:ok, order} = OrderManagement.create_order(@create_attrs)
@@ -34,7 +36,11 @@ defmodule MsWeb.OrderControllerTest do
 
   describe "create order" do
     test "renders order when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.order_path(conn, :create), order: @create_attrs)
+      conn = post(
+        conn,
+        Routes.order_path(conn, :create),
+        order: @create_attrs
+      )
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.order_path(conn, :show, id))
@@ -43,7 +49,8 @@ defmodule MsWeb.OrderControllerTest do
                "id" => id,
                "creation_date" => "2010-04-17T14:00:00Z",
                "details" => %{},
-               "message" => "some message"
+               "message" => "some message",
+               "order_items" => [%{"amount" => 42, "unit_price" => 120.5, "order_id" => id}]
              } = json_response(conn, 200)["data"]
     end
 

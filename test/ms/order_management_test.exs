@@ -3,21 +3,31 @@ defmodule Ms.OrderManagementTest do
 
   alias Ms.OrderManagement
 
+  @valid_attrs_order %{
+    "creation_date" => "2010-04-17T14:00:00Z",
+    "details" => %{},
+    "message" => "some message",
+    "order_items" => []
+  }
+  @update_attrs_order %{
+    "creation_date" => "2011-05-18T15:01:01Z",
+    "details" => %{},
+    "message" => "some updated message",
+    "order_items" => []
+  }
+  @invalid_attrs_order %{"creation_date" => nil, "details" => nil, "message" => nil}
+
+  def order_fixture(attrs \\ %{}) do
+    {:ok, order} =
+      attrs
+      |> Enum.into(@valid_attrs_order)
+      |> OrderManagement.create_order()
+
+    order
+  end
+
   describe "orders" do
     alias Ms.OrderManagement.Order
-
-    @valid_attrs %{creation_date: "2010-04-17T14:00:00Z", details: %{}, message: "some message"}
-    @update_attrs %{creation_date: "2011-05-18T15:01:01Z", details: %{}, message: "some updated message"}
-    @invalid_attrs %{creation_date: nil, details: nil, message: nil}
-
-    def order_fixture(attrs \\ %{}) do
-      {:ok, order} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> OrderManagement.create_order()
-
-      order
-    end
 
     test "list_orders/0 returns all orders" do
       order = order_fixture()
@@ -30,19 +40,19 @@ defmodule Ms.OrderManagementTest do
     end
 
     test "create_order/1 with valid data creates a order" do
-      assert {:ok, %Order{} = order} = OrderManagement.create_order(@valid_attrs)
+      assert {:ok, %Order{} = order} = OrderManagement.create_order(@valid_attrs_order)
       assert order.creation_date == DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
       assert order.details == %{}
       assert order.message == "some message"
     end
 
     test "create_order/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = OrderManagement.create_order(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = OrderManagement.create_order(@invalid_attrs_order)
     end
 
     test "update_order/2 with valid data updates the order" do
       order = order_fixture()
-      assert {:ok, %Order{} = order} = OrderManagement.update_order(order, @update_attrs)
+      assert {:ok, %Order{} = order} = OrderManagement.update_order(order, @update_attrs_order)
       assert order.creation_date == DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
       assert order.details == %{}
       assert order.message == "some updated message"
@@ -50,7 +60,7 @@ defmodule Ms.OrderManagementTest do
 
     test "update_order/2 with invalid data returns error changeset" do
       order = order_fixture()
-      assert {:error, %Ecto.Changeset{}} = OrderManagement.update_order(order, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = OrderManagement.update_order(order, @invalid_attrs_order)
       assert order == OrderManagement.get_order!(order.id)
     end
 
@@ -69,14 +79,16 @@ defmodule Ms.OrderManagementTest do
   describe "order_items" do
     alias Ms.OrderManagement.OrderItem
 
-    @valid_attrs %{amount: 42, unit_price: 120.5}
-    @update_attrs %{amount: 43, unit_price: 456.7}
-    @invalid_attrs %{amount: nil, unit_price: nil}
+    @valid_attrs %{"amount" => 42, "unit_price" => 120.5}
+    @update_attrs %{"amount" => 43, "unit_price" => 456.7}
+    @invalid_attrs %{"amount" => nil, "unit_price" => nil}
 
     def order_item_fixture(attrs \\ %{}) do
+      order = order_fixture()
+      valid_attrs = Map.put(@valid_attrs, "order_id", order.id)
       {:ok, order_item} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(valid_attrs)
         |> OrderManagement.create_order_item()
 
       order_item
@@ -93,7 +105,9 @@ defmodule Ms.OrderManagementTest do
     end
 
     test "create_order_item/1 with valid data creates a order_item" do
-      assert {:ok, %OrderItem{} = order_item} = OrderManagement.create_order_item(@valid_attrs)
+      order = order_fixture()
+      valid_attrs = Map.put(@valid_attrs, "order_id", order.id)
+      assert {:ok, %OrderItem{} = order_item} = OrderManagement.create_order_item(valid_attrs)
       assert order_item.amount == 42
       assert order_item.unit_price == 120.5
     end

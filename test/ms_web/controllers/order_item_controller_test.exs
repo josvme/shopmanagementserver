@@ -4,18 +4,43 @@ defmodule MsWeb.OrderItemControllerTest do
   alias Ms.OrderManagement
   alias Ms.OrderManagement.OrderItem
 
+  @valid_attrs_order %{
+    "creation_date" => "2010-04-17T14:00:00Z",
+    "details" => %{},
+    "message" => "some message",
+    "order_items" => []
+  }
+  @update_attrs_order %{
+    "creation_date" => "2011-05-18T15:01:01Z",
+    "details" => %{},
+    "message" => "some updated message",
+    "order_items" => []
+  }
+  @invalid_attrs_order %{"creation_date" => nil, "details" => nil, "message" => nil}
+
+  def order_fixture(attrs \\ %{}) do
+    {:ok, order} =
+      attrs
+      |> Enum.into(@valid_attrs_order)
+      |> OrderManagement.create_order()
+
+    order
+  end
+
   @create_attrs %{
-    amount: 42,
-    unit_price: 120.5
+    "amount" => 42,
+    "unit_price" => 120.5
   }
   @update_attrs %{
-    amount: 43,
-    unit_price: 456.7
+    "amount" => 43,
+    "unit_price" => 456.7
   }
   @invalid_attrs %{amount: nil, unit_price: nil}
 
   def fixture(:order_item) do
-    {:ok, order_item} = OrderManagement.create_order_item(@create_attrs)
+    order = order_fixture()
+    create_attrs = Map.put(@create_attrs, "order_id", order.id)
+    {:ok, order_item} = OrderManagement.create_order_item(create_attrs)
     order_item
   end
 
@@ -32,7 +57,9 @@ defmodule MsWeb.OrderItemControllerTest do
 
   describe "create order_item" do
     test "renders order_item when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.order_item_path(conn, :create), order_item: @create_attrs)
+      order = order_fixture()
+      create_attrs = Map.put(@create_attrs, "order_id", order.id)
+      conn = post(conn, Routes.order_item_path(conn, :create), order_item: create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.order_item_path(conn, :show, id))

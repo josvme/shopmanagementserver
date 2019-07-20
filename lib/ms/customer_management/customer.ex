@@ -7,6 +7,9 @@ defmodule Ms.CustomerManagement.Customer do
     field :name, :string
     field :phone, :string
     field :pincode, :string
+    # has_many tells that there can be multiple orders from a customer
+    # This can be used to preload all orders from a customer
+    has_many :orders, Ms.OrderManagement.Order
 
     timestamps()
   end

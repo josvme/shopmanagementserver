@@ -18,7 +18,7 @@ defmodule Ms.OrderManagement do
 
   """
   def list_orders do
-    Repo.all(Order)
+    Repo.all(Order) |> Repo.preload(:order_items)
   end
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Ms.OrderManagement do
       ** (Ecto.NoResultsError)
 
   """
-  def get_order!(id), do: Repo.get!(Order, id)
+  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(:order_items)
 
   @doc """
   Creates a order.
@@ -50,9 +50,17 @@ defmodule Ms.OrderManagement do
 
   """
   def create_order(attrs \\ %{}) do
-    %Order{}
+    response = %Order{}
     |> Order.changeset(attrs)
     |> Repo.insert()
+
+    case response do
+      {:ok, order} ->
+        Enum.map(attrs["order_items"], fn oi -> create_order_item(Map.merge(oi, %{"order_id" => order.id})) end)
+        {:ok, order |> Repo.preload(:order_items) }
+
+      {:error, e} -> {:error, e}
+    end
   end
 
   @doc """
