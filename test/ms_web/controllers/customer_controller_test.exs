@@ -67,7 +67,7 @@ defmodule MsWeb.CustomerControllerTest do
 
       assert %{
                "id" => id,
-               "details" => {},
+               "details" => %{},
                "name" => "some updated name",
                "phone" => "some updated phone",
                "pincode" => "some updated pincode"

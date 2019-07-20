@@ -1,12 +1,12 @@
-defmodule Ms.Inventory do
+defmodule Ms.InventoryManagement do
   @moduledoc """
-  The Inventory context.
+  The InventoryManagement context.
   """
 
   import Ecto.Query, warn: false
   alias Ms.Repo
 
-  alias Ms.Inventory.Product
+  alias Ms.InventoryManagement.Product
 
   @doc """
   Returns the list of products.
@@ -102,7 +102,7 @@ defmodule Ms.Inventory do
     Product.changeset(product, %{})
   end
 
-  alias Ms.Inventory.Brand
+  alias Ms.InventoryManagement.Brand
 
   @doc """
   Returns the list of brands.

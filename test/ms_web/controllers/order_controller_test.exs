@@ -5,16 +5,16 @@ defmodule MsWeb.OrderControllerTest do
   alias Ms.OrderManagement.Order
 
   @create_attrs %{
-    creationDate: "2010-04-17T14:00:00Z",
+    creation_date: "2010-04-17T14:00:00Z",
     details: %{},
     message: "some message"
   }
   @update_attrs %{
-    creationDate: "2011-05-18T15:01:01Z",
+    creation_date: "2011-05-18T15:01:01Z",
     details: %{},
     message: "some updated message"
   }
-  @invalid_attrs %{creationDate: nil, details: nil, message: nil}
+  @invalid_attrs %{creation_date: nil, details: nil, message: nil}
 
   def fixture(:order) do
     {:ok, order} = OrderManagement.create_order(@create_attrs)
@@ -41,7 +41,7 @@ defmodule MsWeb.OrderControllerTest do
 
       assert %{
                "id" => id,
-               "creationDate" => "2010-04-17T14:00:00Z",
+               "creation_date" => "2010-04-17T14:00:00Z",
                "details" => %{},
                "message" => "some message"
              } = json_response(conn, 200)["data"]
@@ -64,8 +64,8 @@ defmodule MsWeb.OrderControllerTest do
 
       assert %{
                "id" => id,
-               "creationDate" => "2011-05-18T15:01:01Z",
-               "details" => {},
+               "creation_date" => "2011-05-18T15:01:01Z",
+               "details" => %{},
                "message" => "some updated message"
              } = json_response(conn, 200)["data"]
     end

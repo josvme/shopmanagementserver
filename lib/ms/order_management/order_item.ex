@@ -4,7 +4,7 @@ defmodule Ms.OrderManagement.OrderItem do
 
   schema "order_items" do
     field :amount, :integer
-    field :unitPrice, :float
+    field :unit_price, :float
     field :product, :id
     field :order, :id
 
@@ -14,7 +14,7 @@ defmodule Ms.OrderManagement.OrderItem do
   @doc false
   def changeset(order_item, attrs) do
     order_item
-    |> cast(attrs, [:amount, :unitPrice])
-    |> validate_required([:amount, :unitPrice])
+    |> cast(attrs, [:amount, :unit_price])
+    |> validate_required([:amount, :unit_price])
   end
 end

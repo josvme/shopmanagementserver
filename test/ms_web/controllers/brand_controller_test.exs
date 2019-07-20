@@ -1,8 +1,8 @@
 defmodule MsWeb.BrandControllerTest do
   use MsWeb.ConnCase
 
-  alias Ms.Inventory
-  alias Ms.Inventory.Brand
+  alias Ms.InventoryManagement
+  alias Ms.InventoryManagement.Brand
 
   @create_attrs %{
     details: %{},
@@ -15,7 +15,7 @@ defmodule MsWeb.BrandControllerTest do
   @invalid_attrs %{details: nil, name: nil}
 
   def fixture(:brand) do
-    {:ok, brand} = Inventory.create_brand(@create_attrs)
+    {:ok, brand} = InventoryManagement.create_brand(@create_attrs)
     brand
   end
 
@@ -61,7 +61,7 @@ defmodule MsWeb.BrandControllerTest do
 
       assert %{
                "id" => id,
-               "details" => {},
+               "details" => %{},
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end

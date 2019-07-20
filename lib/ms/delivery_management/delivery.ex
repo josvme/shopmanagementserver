@@ -6,7 +6,7 @@ defmodule Ms.DeliveryManagement.Delivery do
     field :address, :map
     field :details, :map
     field :fare, :float
-    field :orderitem, :id
+    field :order_item, :id
     field :customer, :id
 
     timestamps()

@@ -64,8 +64,8 @@ defmodule MsWeb.DeliveryControllerTest do
 
       assert %{
                "id" => id,
-               "address" => {},
-               "details" => {},
+               "address" => %{},
+               "details" => %{},
                "fare" => 456.7
              } = json_response(conn, 200)["data"]
     end

@@ -1,4 +1,4 @@
-defmodule Ms.Inventory.Brand do
+defmodule Ms.InventoryManagement.Brand do
   use Ecto.Schema
   import Ecto.Changeset
 

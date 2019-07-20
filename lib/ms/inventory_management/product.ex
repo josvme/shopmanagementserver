@@ -1,4 +1,4 @@
-defmodule Ms.Inventory.Product do
+defmodule Ms.InventoryManagement.Product do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,7 +8,7 @@ defmodule Ms.Inventory.Product do
     field :stock, :integer
     field :tax, :float
     field :details, :map
-    belongs_to(:brand, Ms.Inventory.Brand)
+    belongs_to(:brand, Ms.InventoryManagement.Brand)
 
     timestamps()
   end

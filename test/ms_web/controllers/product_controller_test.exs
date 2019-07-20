@@ -1,8 +1,8 @@
 defmodule MsWeb.ProductControllerTest do
   use MsWeb.ConnCase
 
-  alias Ms.Inventory
-  alias Ms.Inventory.Product
+  alias Ms.InventoryManagement
+  alias Ms.InventoryManagement.Product
 
   @create_attrs %{
     name: "some name",
@@ -19,7 +19,7 @@ defmodule MsWeb.ProductControllerTest do
   @invalid_attrs %{name: nil, price: nil, stock: nil, tax: nil}
 
   def fixture(:product) do
-    {:ok, product} = Inventory.create_product(@create_attrs)
+    {:ok, product} = InventoryManagement.create_product(@create_attrs)
     product
   end
 

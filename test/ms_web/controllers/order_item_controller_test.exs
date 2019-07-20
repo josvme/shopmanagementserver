@@ -6,13 +6,13 @@ defmodule MsWeb.OrderItemControllerTest do
 
   @create_attrs %{
     amount: 42,
-    unitPrice: 120.5
+    unit_price: 120.5
   }
   @update_attrs %{
     amount: 43,
-    unitPrice: 456.7
+    unit_price: 456.7
   }
-  @invalid_attrs %{amount: nil, unitPrice: nil}
+  @invalid_attrs %{amount: nil, unit_price: nil}
 
   def fixture(:order_item) do
     {:ok, order_item} = OrderManagement.create_order_item(@create_attrs)
@@ -40,7 +40,7 @@ defmodule MsWeb.OrderItemControllerTest do
       assert %{
                "id" => id,
                "amount" => 42,
-               "unitPrice" => 120.5
+               "unit_price" => 120.5
              } = json_response(conn, 200)["data"]
     end
 
@@ -62,7 +62,7 @@ defmodule MsWeb.OrderItemControllerTest do
       assert %{
                "id" => id,
                "amount" => 43,
-               "unitPrice" => 456.7
+               "unit_price" => 456.7
              } = json_response(conn, 200)["data"]
     end
 

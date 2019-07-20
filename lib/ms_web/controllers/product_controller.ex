@@ -1,18 +1,18 @@
 defmodule MsWeb.ProductController do
   use MsWeb, :controller
 
-  alias Ms.Inventory
-  alias Ms.Inventory.Product
+  alias Ms.InventoryManagement
+  alias Ms.InventoryManagement.Product
 
   action_fallback MsWeb.FallbackController
 
   def index(conn, _params) do
-    products = Inventory.list_products()
+    products = InventoryManagement.list_products()
     render(conn, "index.json", products: products)
   end
 
   def create(conn, %{"product" => product_params}) do
-    with {:ok, %Product{} = product} <- Inventory.create_product(product_params) do
+    with {:ok, %Product{} = product} <- InventoryManagement.create_product(product_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.product_path(conn, :show, product))
@@ -21,22 +21,22 @@ defmodule MsWeb.ProductController do
   end
 
   def show(conn, %{"id" => id}) do
-    product = Inventory.get_product!(id)
+    product = InventoryManagement.get_product!(id)
     render(conn, "show.json", product: product)
   end
 
   def update(conn, %{"id" => id, "product" => product_params}) do
-    product = Inventory.get_product!(id)
+    product = InventoryManagement.get_product!(id)
 
-    with {:ok, %Product{} = product} <- Inventory.update_product(product, product_params) do
+    with {:ok, %Product{} = product} <- InventoryManagement.update_product(product, product_params) do
       render(conn, "show.json", product: product)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    product = Inventory.get_product!(id)
+    product = InventoryManagement.get_product!(id)
 
-    with {:ok, %Product{}} <- Inventory.delete_product(product) do
+    with {:ok, %Product{}} <- InventoryManagement.delete_product(product) do
       send_resp(conn, :no_content, "")
     end
   end

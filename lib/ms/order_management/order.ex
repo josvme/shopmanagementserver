@@ -3,7 +3,7 @@ defmodule Ms.OrderManagement.Order do
   import Ecto.Changeset
 
   schema "orders" do
-    field :creationDate, :utc_datetime
+    field :creation_date, :utc_datetime
     field :details, :map
     field :message, :string
     field :customer, :id
@@ -14,7 +14,7 @@ defmodule Ms.OrderManagement.Order do
   @doc false
   def changeset(order, attrs) do
     order
-    |> cast(attrs, [:creationDate, :message, :details])
-    |> validate_required([:creationDate, :message, :details])
+    |> cast(attrs, [:creation_date, :message, :details])
+    |> validate_required([:creation_date, :message, :details])
   end
 end

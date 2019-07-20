@@ -13,6 +13,6 @@ defmodule MsWeb.OrderItemView do
   def render("order_item.json", %{order_item: order_item}) do
     %{id: order_item.id,
       amount: order_item.amount,
-      unitPrice: order_item.unitPrice}
+      unit_price: order_item.unit_price}
   end
 end

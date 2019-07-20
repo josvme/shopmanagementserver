@@ -12,7 +12,7 @@ defmodule MsWeb.OrderView do
 
   def render("order.json", %{order: order}) do
     %{id: order.id,
-      creationDate: order.creationDate,
+      creation_date: order.creation_date,
       message: order.message,
       details: order.details}
   end
