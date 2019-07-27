@@ -101,4 +101,16 @@ defmodule Ms.CustomerManagement do
   def change_customer(%Customer{} = customer) do
     Customer.changeset(customer, %{})
   end
+
+  @doc """
+  Returns a single Product
+  """
+  def search_customer(term) do
+    query =
+      from c in Customer,
+        select: c,
+        where: ilike(c.name, ^"%#{term}%")
+
+    Repo.all(query)
+  end
 end

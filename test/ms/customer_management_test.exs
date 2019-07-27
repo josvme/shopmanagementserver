@@ -7,7 +7,12 @@ defmodule Ms.CustomerManagementTest do
     alias Ms.CustomerManagement.Customer
 
     @valid_attrs %{details: %{}, name: "some name", phone: "some phone", pincode: "some pincode"}
-    @update_attrs %{details: %{}, name: "some updated name", phone: "some updated phone", pincode: "some updated pincode"}
+    @update_attrs %{
+      details: %{},
+      name: "some updated name",
+      phone: "some updated phone",
+      pincode: "some updated pincode"
+    }
     @invalid_attrs %{details: nil, name: nil, phone: nil, pincode: nil}
 
     def customer_fixture(attrs \\ %{}) do
@@ -43,7 +48,10 @@ defmodule Ms.CustomerManagementTest do
 
     test "update_customer/2 with valid data updates the customer" do
       customer = customer_fixture()
-      assert {:ok, %Customer{} = customer} = CustomerManagement.update_customer(customer, @update_attrs)
+
+      assert {:ok, %Customer{} = customer} =
+               CustomerManagement.update_customer(customer, @update_attrs)
+
       assert customer.details == %{}
       assert customer.name == "some updated name"
       assert customer.phone == "some updated phone"
@@ -52,7 +60,10 @@ defmodule Ms.CustomerManagementTest do
 
     test "update_customer/2 with invalid data returns error changeset" do
       customer = customer_fixture()
-      assert {:error, %Ecto.Changeset{}} = CustomerManagement.update_customer(customer, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               CustomerManagement.update_customer(customer, @invalid_attrs)
+
       assert customer == CustomerManagement.get_customer!(customer.id)
     end
 

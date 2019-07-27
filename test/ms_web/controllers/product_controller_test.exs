@@ -93,6 +93,15 @@ defmodule MsWeb.ProductControllerTest do
     end
   end
 
+  describe "search products" do
+    setup [:create_product]
+
+    test "searches all products containing string", %{conn: conn} do
+      conn = get(conn, Routes.product_path(conn, :search, %{term: "ome"}))
+      assert [%{"name" => "some name"}] = json_response(conn, 200)["data"]
+    end
+  end
+
   defp create_product(_) do
     product = fixture(:product)
     {:ok, product: product}

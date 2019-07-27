@@ -27,3 +27,4 @@ ms-*.tar
 # this depending on your deployment strategy.
 /priv/static/
 .idea/
+.elixir_ls

@@ -11,9 +11,11 @@ defmodule Ms.Application do
       # Start the Ecto repository
       Ms.Repo,
       # Start the endpoint when the application starts
-      MsWeb.Endpoint
+      MsWeb.Endpoint,
       # Starts a worker by calling: Ms.Worker.start_link(arg)
       # {Ms.Worker, arg},
+      Ms.CacheManagement.Product,
+      Ms.CacheManagement.Customer
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -35,7 +35,10 @@ defmodule Ms.OrderManagement do
       ** (Ecto.NoResultsError)
 
   """
-  def get_order!(id), do: Repo.get!(Order, id) |> Repo.preload(:order_items)
+  def get_order!(id, params \\%{}) do
+    Repo.get!(Order, id)
+    |> Repo.preload(:order_items)
+  end
 
   @doc """
   Creates a order.
@@ -76,9 +79,38 @@ defmodule Ms.OrderManagement do
 
   """
   def update_order(%Order{} = order, attrs) do
-    order
-    |> Order.changeset(attrs)
-    |> Repo.update()
+    response = order
+               |> Order.changeset(attrs)
+               |> Repo.update()
+
+    with {:ok, order} <- response do
+      preloaded_order = order |> Repo.preload(:order_items)
+      existing_order_items = preloaded_order.order_items
+      # If order items doesn't exist we provide []
+      new_order_items = attrs["order_items"] || []
+
+      # We delete all existing order items which are not in new order items
+      for order_item <- existing_order_items do
+        case Enum.filter(new_order_items, fn x -> Map.get(x, "id") == Map.get(order_item, "id") end) do
+          [] -> delete_order_item(order_item)
+          _ -> []
+        end
+      end
+
+      # We loop through all new order items and if already existing in our order, we just update them.
+      for order_item <- new_order_items do
+        case Enum.filter(existing_order_items, fn x -> Map.get(x, "id") == Map.get(order_item, "id") end) do
+          [] -> create_order_item(Map.merge(order_item, %{"order_id" => order.id}))
+          [found] -> update_order_item(found, Map.merge(order_item, %{"order_id" => order.id}))
+        end
+      end
+
+      {
+        :ok,
+        order
+        |> Repo.preload(:order_items)
+      }
+    end
   end
 
   @doc """

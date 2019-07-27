@@ -102,6 +102,18 @@ defmodule Ms.InventoryManagement do
     Product.changeset(product, %{})
   end
 
+  @doc """
+  Returns a single Product
+  """
+  def search_product(term) do
+    query =
+      from p in Product,
+        select: p,
+        where: ilike(p.name, ^"%#{term}%")
+
+    Repo.all(query)
+  end
+
   alias Ms.InventoryManagement.Brand
 
   @doc """

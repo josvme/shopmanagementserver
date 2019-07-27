@@ -43,7 +43,10 @@ defmodule Ms.InventoryManagementTest do
 
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
-      assert {:ok, %Product{} = product} = InventoryManagement.update_product(product, @update_attrs)
+
+      assert {:ok, %Product{} = product} =
+               InventoryManagement.update_product(product, @update_attrs)
+
       assert product.name == "some updated name"
       assert product.price == 456.7
       assert product.stock == 43
@@ -52,7 +55,10 @@ defmodule Ms.InventoryManagementTest do
 
     test "update_product/2 with invalid data returns error changeset" do
       product = product_fixture()
-      assert {:error, %Ecto.Changeset{}} = InventoryManagement.update_product(product, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               InventoryManagement.update_product(product, @invalid_attrs)
+
       assert product == InventoryManagement.get_product!(product.id)
     end
 

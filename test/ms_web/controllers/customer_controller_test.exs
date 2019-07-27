@@ -59,7 +59,10 @@ defmodule MsWeb.CustomerControllerTest do
   describe "update customer" do
     setup [:create_customer]
 
-    test "renders customer when data is valid", %{conn: conn, customer: %Customer{id: id} = customer} do
+    test "renders customer when data is valid", %{
+      conn: conn,
+      customer: %Customer{id: id} = customer
+    } do
       conn = put(conn, Routes.customer_path(conn, :update, customer), customer: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -90,6 +93,15 @@ defmodule MsWeb.CustomerControllerTest do
       assert_error_sent 404, fn ->
         get(conn, Routes.customer_path(conn, :show, customer))
       end
+    end
+  end
+
+  describe "search customers" do
+    setup [:create_customer]
+
+    test "searches all customers containing string", %{conn: conn} do
+      conn = get(conn, Routes.customer_path(conn, :search, %{term: "ome"}))
+      assert [%{"name" => "some name"}] = json_response(conn, 200)["data"]
     end
   end
 
