@@ -2,6 +2,7 @@ defmodule Ms.OrderManagementTest do
   use Ms.DataCase
 
   alias Ms.OrderManagement
+  alias Ms.InventoryManagement
 
   @valid_attrs_order %{
     "creation_date" => "2010-04-17T14:00:00Z",
@@ -24,6 +25,17 @@ defmodule Ms.OrderManagementTest do
       |> OrderManagement.create_order()
 
     order
+  end
+
+  @valid_attrs_product %{name: "some name", price: 120.5, stock: 42, tax: 120.5}
+
+  def product_fixture(attrs \\ %{}) do
+    {:ok, product} =
+      attrs
+      |> Enum.into(@valid_attrs_product)
+      |> InventoryManagement.create_product()
+
+    product
   end
 
   describe "orders" do
@@ -85,7 +97,8 @@ defmodule Ms.OrderManagementTest do
 
     def order_item_fixture(attrs \\ %{}) do
       order = order_fixture()
-      valid_attrs = Map.put(@valid_attrs, "order_id", order.id)
+      product = product_fixture()
+      valid_attrs = Map.merge(@valid_attrs, %{"order_id" => order.id, "product_id" => product.id})
       {:ok, order_item} =
         attrs
         |> Enum.into(valid_attrs)
@@ -106,7 +119,8 @@ defmodule Ms.OrderManagementTest do
 
     test "create_order_item/1 with valid data creates a order_item" do
       order = order_fixture()
-      valid_attrs = Map.put(@valid_attrs, "order_id", order.id)
+      product = product_fixture()
+      valid_attrs = Map.merge(@valid_attrs, %{"order_id" => order.id, "product_id" => product.id})
       assert {:ok, %OrderItem{} = order_item} = OrderManagement.create_order_item(valid_attrs)
       assert order_item.amount == 42
       assert order_item.unit_price == 120.5

@@ -8,6 +8,8 @@ config :ms, Ms.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox,
   port: 5433
+# This setting can be used to debug tests. This sets the ecto timeout to 600 seconds.
+# ownership_timeout: 600_000
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.

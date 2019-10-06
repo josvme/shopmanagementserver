@@ -2,25 +2,38 @@ defmodule MsWeb.OrderControllerTest do
   use MsWeb.ConnCase
 
   alias Ms.OrderManagement
+  alias Ms.InventoryManagement
   alias Ms.OrderManagement.Order
 
   @create_attrs %{
     "creation_date" => "2010-04-17T14:00:00Z",
    "details" => %{},
    "message" => "some message",
-   "order_items" => [%{"amount" => 42, "unit_price" => 120.5}]
+   "order_items" => []
   }
   @update_attrs %{
     "creation_date" => "2011-05-18T15:01:01Z",
     "details" => %{},
     "message" => "some updated message",
-    "order_items" =>[%{"amount" => 42, "unit_price" => 120.5}]
+    "order_items" => []
   }
   @invalid_attrs %{"creation_date" => nil, "details" => nil, "message" => nil}
 
   def fixture(:order) do
     {:ok, order} = OrderManagement.create_order(@create_attrs)
     order
+  end
+
+  @create_attrs_product %{
+    "name" => "some name",
+    "price" => 120.5,
+    "stock" =>  42,
+    "tax" => 120.5
+  }
+
+  def fixture(:product) do
+    {:ok, product} = InventoryManagement.create_product(@create_attrs_product)
+    product
   end
 
   setup %{conn: conn} do
@@ -35,11 +48,13 @@ defmodule MsWeb.OrderControllerTest do
   end
 
   describe "create order" do
-    test "renders order when data is valid", %{conn: conn} do
+    setup [:create_product]
+    test "renders order when data is valid", %{conn: conn, product: product} do
+      order_items = %{"order_items" => [%{"amount" => 42, "unit_price" => 120.5, "product_id" => product.id}]}
       conn = post(
         conn,
         Routes.order_path(conn, :create),
-        order: @create_attrs
+        order: Map.merge(@create_attrs, order_items)
       )
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -99,5 +114,10 @@ defmodule MsWeb.OrderControllerTest do
   defp create_order(_) do
     order = fixture(:order)
     {:ok, order: order}
+  end
+
+  defp create_product(_) do
+    product = fixture(:product)
+    {:ok, product: product}
   end
 end

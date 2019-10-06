@@ -2,6 +2,7 @@ defmodule MsWeb.OrderItemControllerTest do
   use MsWeb.ConnCase
 
   alias Ms.OrderManagement
+  alias Ms.InventoryManagement
   alias Ms.OrderManagement.OrderItem
 
   @valid_attrs_order %{
@@ -27,20 +28,35 @@ defmodule MsWeb.OrderItemControllerTest do
     order
   end
 
-  @create_attrs %{
+  @create_attrs_product %{
+    name: "some name",
+    price: 120.5,
+    stock: 42,
+    tax: 120.5
+  }
+  def product_fixture() do
+    {:ok, product} = InventoryManagement.create_product(@create_attrs_product)
+    product
+  end
+
+  @create_attrs_order_item %{
     "amount" => 42,
     "unit_price" => 120.5
   }
-  @update_attrs %{
+
+  @update_attrs_order_item %{
     "amount" => 43,
     "unit_price" => 456.7
   }
-  @invalid_attrs %{amount: nil, unit_price: nil}
 
-  def fixture(:order_item) do
+  @invalid_attrs_order_item %{amount: nil, unit_price: nil}
+
+  def order_item_fixture() do
     order = order_fixture()
-    create_attrs = Map.put(@create_attrs, "order_id", order.id)
-    {:ok, order_item} = OrderManagement.create_order_item(create_attrs)
+    product = product_fixture()
+    create_attrs_order_item = Map.put(@create_attrs_order_item, "order_id", order.id)
+    create_attrs_order_item = Map.put(create_attrs_order_item, "product_id", product.id)
+    {:ok, order_item} = OrderManagement.create_order_item(create_attrs_order_item)
     order_item
   end
 
@@ -56,9 +72,9 @@ defmodule MsWeb.OrderItemControllerTest do
   end
 
   describe "create order_item" do
-    test "renders order_item when data is valid", %{conn: conn} do
-      order = order_fixture()
-      create_attrs = Map.put(@create_attrs, "order_id", order.id)
+    setup [:create_product, :create_order]
+    test "renders order_item when data is valid", %{conn: conn, product: product, order: order} do
+      create_attrs = Map.merge(@create_attrs_order_item, %{"order_id": order.id, "product_id": product.id})
       conn = post(conn, Routes.order_item_path(conn, :create), order_item: create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -72,7 +88,7 @@ defmodule MsWeb.OrderItemControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.order_item_path(conn, :create), order_item: @invalid_attrs)
+      conn = post(conn, Routes.order_item_path(conn, :create), order_item: @invalid_attrs_order_item)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -81,7 +97,7 @@ defmodule MsWeb.OrderItemControllerTest do
     setup [:create_order_item]
 
     test "renders order_item when data is valid", %{conn: conn, order_item: %OrderItem{id: id} = order_item} do
-      conn = put(conn, Routes.order_item_path(conn, :update, order_item), order_item: @update_attrs)
+      conn = put(conn, Routes.order_item_path(conn, :update, order_item), order_item: @update_attrs_order_item)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.order_item_path(conn, :show, id))
@@ -94,7 +110,7 @@ defmodule MsWeb.OrderItemControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, order_item: order_item} do
-      conn = put(conn, Routes.order_item_path(conn, :update, order_item), order_item: @invalid_attrs)
+      conn = put(conn, Routes.order_item_path(conn, :update, order_item), order_item: @invalid_attrs_order_item)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -113,7 +129,17 @@ defmodule MsWeb.OrderItemControllerTest do
   end
 
   defp create_order_item(_) do
-    order_item = fixture(:order_item)
+    order_item = order_item_fixture()
     {:ok, order_item: order_item}
+  end
+
+  defp create_order(_) do
+    order= order_fixture()
+    {:ok, order: order}
+  end
+
+  defp create_product(_) do
+    product = product_fixture()
+    {:ok, product: product}
   end
 end
